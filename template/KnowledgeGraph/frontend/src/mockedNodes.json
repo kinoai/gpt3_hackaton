@@ -1,0 +1,181 @@
+[
+  { "doc": "Distilling the Knowledge in a Neural Network", "groups": [] },
+  {
+    "doc": "Deep Neural Networks are Easily Fooled: High Confidence Predictions for Unrecognizable Images",
+    "groups": []
+  },
+  {
+    "doc": "Visualizing and Understanding Convolutional Networks",
+    "groups": []
+  },
+  {
+    "doc": "DeCAF: A Deep Convolutional Activation Feature for Generic Visual Recognition",
+    "groups": []
+  },
+  {
+    "doc": "Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift",
+    "groups": []
+  },
+  { "doc": "Adam: A Method for Stochastic Optimization", "groups": [] },
+  {
+    "doc": "Improving neural networks by preventing co-adaptation of feature detectors",
+    "groups": []
+  },
+  { "doc": "Pixel Recurrent Neural Networks", "groups": [] },
+  {
+    "doc": "DRAW: A Recurrent Neural Network For Image Generation",
+    "groups": []
+  },
+  {
+    "doc": "Auto-Encoding Variational Bayes",
+    "groups": [{ "name": "Another one", "score": 222.214 }]
+  },
+  {
+    "doc": "Building high-level features using large scale unsupervised learning",
+    "groups": []
+  },
+  {
+    "doc": "Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning",
+    "groups": []
+  },
+  { "doc": "Deep Residual Learning for Image Recognition", "groups": [] },
+  {
+    "doc": "Very Deep Convolutional Networks for Large-Scale Image Recognition",
+    "groups": []
+  },
+  {
+    "doc": "Return of the Devil in the Details: Delving Deep into Convolutional Nets",
+    "groups": []
+  },
+  {
+    "doc": "OverFeat: Integrated Recognition, Localization and Detection using Convolutional Networks",
+    "groups": []
+  },
+  {
+    "doc": "Maxout Networks",
+    "groups": [{ "name": "Another one", "score": 217.372 }]
+  },
+  { "doc": "Network In Network", "groups": [] },
+  {
+    "doc": "Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition",
+    "groups": []
+  },
+  {
+    "doc": "Show, Attend and Tell: Neural Image Caption Generation with Visual Attention",
+    "groups": []
+  },
+  { "doc": "Exploring the Limits of Language Modeling", "groups": [] },
+  {
+    "doc": "Neural Machine Translation by Jointly Learning to Align and Translate",
+    "groups": [
+      { "name": "Parameter optimization", "score": 252.864 },
+      { "name": "Another one", "score": 252.864 }
+    ]
+  },
+  {
+    "doc": "Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation",
+    "groups": [{ "name": "Another one", "score": 239.59 }]
+  },
+  {
+    "doc": "A Convolutional Neural Network for Modelling Sentences",
+    "groups": [{ "name": "Another one", "score": 214.608 }]
+  },
+  {
+    "doc": "Convolutional Neural Networks for Sentence Classification",
+    "groups": []
+  },
+  {
+    "doc": "Distributed Representations of Sentences and Documents",
+    "groups": []
+  },
+  {
+    "doc": "Efficient Estimation of Word Representations in Vector Space",
+    "groups": []
+  },
+  {
+    "doc": "Speech Recognition with Deep Recurrent Neural Networks",
+    "groups": []
+  },
+  { "doc": "Playing Atari with Deep Reinforcement Learning", "groups": [] },
+  {
+    "doc": "Learning to learn by gradient descent by gradient descent",
+    "groups": [
+      { "name": "Parameter optimization", "score": 269.753 },
+      { "name": "Another one", "score": 269.753 }
+    ]
+  },
+  {
+    "doc": "SqueezeNet: AlexNet-level accuracy with 50x fewer parameters and <0.5MB model size",
+    "groups": [
+      { "name": "Parameter optimization", "score": 285.364 },
+      { "name": "Another one", "score": 285.364 }
+    ]
+  },
+  {
+    "doc": "EIE: Efficient Inference Engine on Compressed Deep Neural Network",
+    "groups": []
+  },
+  { "doc": "Deep Photo Style Transfer", "groups": [] },
+  {
+    "doc": "Evolution Strategies as a Scalable Alternative to Reinforcement Learning",
+    "groups": []
+  },
+  { "doc": "Deformable Convolutional Networks", "groups": [] },
+  {
+    "doc": "Learning to Discover Cross-Domain Relations with Generative Adversarial Networks",
+    "groups": []
+  },
+  { "doc": "Deep Voice: Real-time Neural Text-to-Speech", "groups": [] },
+  {
+    "doc": "PixelNet: Representation of the pixels, by the pixels, and for the pixels",
+    "groups": []
+  },
+  { "doc": "Natural Language Processing (almost) from Scratch", "groups": [] },
+  {
+    "doc": "TensorFlow: Large-Scale Machine Learning on Heterogeneous Distributed Systems",
+    "groups": []
+  },
+  {
+    "doc": "MatConvNet - Convolutional Neural Networks for MATLAB",
+    "groups": [{ "name": "Another one", "score": 228.153 }]
+  },
+  { "doc": "ImageNet Large Scale Visual Recognition Challenge", "groups": [] },
+  {
+    "doc": "Caffe: Convolutional Architecture for Fast Feature Embedding",
+    "groups": []
+  },
+  { "doc": "Deep Reinforcement Learning: An Overview", "groups": [] },
+  {
+    "doc": "Neural Machine Translation and Sequence-to-sequence Models: A Tutorial",
+    "groups": [{ "name": "Another one", "score": 230.55 }]
+  },
+  { "doc": "Deep Learning in Neural Networks: An Overview", "groups": [] },
+  {
+    "doc": "Representation Learning: A Review and New Perspectives",
+    "groups": []
+  },
+  {
+    "doc": "Adaptive Computation Time for Recurrent Neural Networks",
+    "groups": [
+      { "name": "Parameter optimization", "score": 255.807 },
+      { "name": "Another one", "score": 255.807 }
+    ]
+  },
+  {
+    "doc": "Reading Text in the Wild with Convolutional Neural Networks",
+    "groups": []
+  },
+  {
+    "doc": "Towards AI-Complete Question Answering: A Set of Prerequisite Toy Tasks",
+    "groups": []
+  },
+  {
+    "doc": "Ask Me Anything: Dynamic Memory Networks for Natural Language Processing",
+    "groups": []
+  },
+  { "doc": "Recurrent Models of Visual Attention", "groups": [] },
+  {
+    "doc": "Recurrent Neural Network Regularization",
+    "groups": [{ "name": "Another one", "score": 220.842 }]
+  }
+]
