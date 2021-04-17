@@ -55,6 +55,9 @@ for paper in iterator:
     paper_data = {}
     paper_data["title"] = paper.title
     paper_data["abstract"] = paper.summary
+    paper_data["authors"] = [author.name for author in paper.authors]
+    paper_data["link"] = paper.links[0].href
+    paper_data["year"] = paper.published.tm_year
 
     path = paper.download_pdf(dirpath="data/")
 
