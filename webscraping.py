@@ -1,9 +1,11 @@
-from bs4 import BeautifulSoup
-import requests
 import re
 
+import requests
+from bs4 import BeautifulSoup
 
-response = requests.get("https://github.com/terryum/awesome-deep-learning-papers")
+response = requests.get(
+    "https://github.com/terryum/awesome-deep-learning-papers"
+)
 # Store the webpage contents
 webpage = response.content
 # Check Status Code (Optional)
@@ -12,18 +14,17 @@ webpage = response.content
 soup = BeautifulSoup(webpage, "html.parser")
 
 
-
 # print(soup)clear
 
 links = []
 ids = []
-for link in soup.findAll('a', attrs={'href': re.compile("^http://*")}):
-    l = link.get('href')
-    
-    if "arxiv" in  l:
+for link in soup.findAll("a", attrs={"href": re.compile("^http://*")}):
+    l = link.get("href")
+
+    if "arxiv" in l:
         links.append(l)
         index = l.rfind("/")
-        ids.append(l[index+1:].strip('.pdf'))
+        ids.append(l[index + 1 :].strip(".pdf"))
 
 
 # for l in links:
@@ -34,6 +35,7 @@ for link in soup.findAll('a', attrs={'href': re.compile("^http://*")}):
 
 
 import arxiv
+
 search = arxiv.Search(id_list=ids)
 
 iterator = search.get()
@@ -53,22 +55,31 @@ for paper in iterator:
     paper_data = {}
     paper_data["title"] = paper.title
     paper_data["abstract"] = paper.summary
-    # paper_data["full_text"] = None
+
+    path = paper.download_pdf(dirpath="data/")
+
+    import pdftotext
+
+    # Load your PDF
+    with open(path, "rb") as f:
+        pdf = pdftotext.PDF(f)
+        paper_data["full_text"] = "\n\n".join(pdf)
+
     data.append(paper_data)
-    
+
+
 print(len(paper_data))
-# print(data[0])
+
 
 import pickle
 
-
-with open('papers.pickle', 'wb') as handle:
+with open("data/papers_full.pickle", "wb") as handle:
     pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    
-    
-with open('papers.pickle', 'rb') as handle:
+
+
+with open("data/papers_full.pickle", "rb") as handle:
     data = pickle.load(handle)
     # print(b)
-    
 
-
+for key, value in data[0].items():
+    print(value)
