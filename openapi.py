@@ -2,6 +2,8 @@
 import json
 import os
 import pickle
+from collections import defaultdict
+from itertools import combinations
 from typing import Generator
 from warnings import resetwarnings
 
@@ -57,22 +59,57 @@ def semantic_search(documents: list, query: str):
 
     return response
 
+    # "document": 0,
+    # "object": "search_result",
+    # "score": 155.354
 
-def create_graph(documents: list, query: str, treshold: int):
+
+def update_nodes(
+    documents: list, query: str, treshold: int, nodes: list = None
+) -> list:
+    if nodes == None:
+        nodes = [{"doc": doc["title"], "groups": []} for doc in documents]
+
     # response = semantic_search(documents=documents, query=query)
     with open("data/semantic_search_response.json") as fp:
         response = json.load(fp)
 
-    graph = {"name": query, "children": []}
-
     for item in response["data"]:
         if item["score"] >= treshold:
-            graph["children"].append(documents[item["document"]])
+            nodes[item["document"]]["groups"].append(
+                {"name": query, "score": item["score"]}
+            )
 
-    return graph
+    return nodes
+
+
+def get_links(nodes: list) -> list:
+    groups = defaultdict(list)
+    for node in nodes:
+        for group in node["groups"]:
+            groups[group["name"]].append(node["doc"])
+    links = []
+    for key, val in groups.items():
+        pairs = list(combinations(val, 2))
+        links.extend(
+            [
+                {"target": pair[0], "source": pair[1], "group": key}
+                for pair in pairs
+            ]
+        )
+
+    return links
 
 
 with open("data/papers.pickle", "rb") as handle:
     data = pickle.load(handle)
 
-graph = create_graph(data, "Parameter optimization", 250)
+nodes = update_nodes(
+    documents=data, query="Parameter optimization", treshold=250
+)
+nodes = update_nodes(
+    documents=data[::-1], query="Another one", treshold=210, nodes=nodes
+)
+
+# print(nodes)
+# print(get_links(nodes=nodes))
