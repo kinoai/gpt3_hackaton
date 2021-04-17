@@ -1,4 +1,9 @@
+# %%
+import json
 import os
+import pickle
+from typing import Generator
+from warnings import resetwarnings
 
 import openai
 from dotenv import load_dotenv
@@ -38,13 +43,36 @@ def get_keypoints(text: str):
     return response
 
 
-def semantic_search(data: list, query: str):
+def semantic_search(documents: list, query: str):
     docs = [
-        art["title"].replace("\n", " ")
-        + " "
-        + art["abstract"].replace("\n", " ")
-        for art in data
+        " ".join(
+            [
+                doc["title"].replace("\n", " "),
+                doc["abstract"].replace("\n", " "),
+            ]
+        )
+        for doc in documents
     ]
     response = openai.Engine(engine).search(documents=docs, query=query)
 
     return response
+
+
+def create_graph(documents: list, query: str, treshold: int):
+    # response = semantic_search(documents=documents, query=query)
+    with open("data/semantic_search_response.json") as fp:
+        response = json.load(fp)
+
+    graph = {"name": query, "children": []}
+
+    for item in response["data"]:
+        if item["score"] >= treshold:
+            graph["children"].append(documents[item["document"]])
+
+    return graph
+
+
+with open("data/papers.pickle", "rb") as handle:
+    data = pickle.load(handle)
+
+graph = create_graph(data, "Parameter optimization", 250)
