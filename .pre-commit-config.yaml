@@ -12,7 +12,6 @@ repos:
       - id: debug-statements
       - id: detect-private-key
       - id: check-yaml
-      - id: check-added-large-files
 
 # Black (code formatting)
   - repo: https://github.com/psf/black
