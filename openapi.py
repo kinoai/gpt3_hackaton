@@ -1,4 +1,11 @@
+# %%
+import json
 import os
+import pickle
+from collections import defaultdict
+from itertools import combinations
+from typing import Generator
+from warnings import resetwarnings
 
 import openai
 from dotenv import load_dotenv
@@ -38,12 +45,15 @@ def get_keypoints(text: str):
     return response
 
 
-def semantic_search(data: list, query: str):
+def semantic_search(documents: list, query: str):
     docs = [
-        art["title"].replace("\n", " ")
-        + " "
-        + art["abstract"].replace("\n", " ")
-        for art in data
+        " ".join(
+            [
+                doc["title"].replace("\n", " "),
+                doc["abstract"].replace("\n", " "),
+            ]
+        )
+        for doc in documents
     ]
     response = openai.Engine(engine).search(documents=docs, query=query)
 
@@ -67,3 +77,54 @@ def common_things(text1, text2):
     )
 
     return response
+
+
+def update_nodes(
+    documents: list, query: str, treshold: int, nodes: list = None
+) -> list:
+    if nodes == None:
+        nodes = [{"doc": doc["title"], "groups": []} for doc in documents]
+
+    # response = semantic_search(documents=documents, query=query)
+    with open("data/semantic_search_response.json") as fp:
+        response = json.load(fp)
+
+    for item in response["data"]:
+        if item["score"] >= treshold:
+            nodes[item["document"]]["groups"].append(
+                {"name": query, "score": item["score"]}
+            )
+
+    return nodes
+
+
+def get_links(nodes: list) -> list:
+    groups = defaultdict(list)
+    for node in nodes:
+        for group in node["groups"]:
+            groups[group["name"]].append(node["doc"])
+    links = []
+    for key, val in groups.items():
+        pairs = list(combinations(val, 2))
+        links.extend(
+            [
+                {"target": pair[0], "source": pair[1], "group": key}
+                for pair in pairs
+            ]
+        )
+
+    return links
+
+
+with open("data/papers.pickle", "rb") as handle:
+    data = pickle.load(handle)
+
+nodes = update_nodes(
+    documents=data, query="Parameter optimization", treshold=250
+)
+nodes = update_nodes(
+    documents=data[::-1], query="Another one", treshold=210, nodes=nodes
+)
+
+# print(nodes)
+# print(get_links(nodes=nodes))
