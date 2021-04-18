@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react"
 
 import * as d3 from "d3"
-import { zoomTransform } from "d3"
+import { debounce } from "debounce"
+
+import NodeWindow from "./NodeWindow"
 
 interface KnowledgeGroup {
   name: string
   score: Number
 }
-interface KnowledgeNode {
+export interface KnowledgeNode {
   doc: string
   groups: KnowledgeGroup[]
 }
@@ -25,6 +27,12 @@ interface KnowledgeGraphProps {
 const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
   const [links, setLinks] = useState([] as d3.HierarchyLink<KnowledgeNode>[])
   const [nodes, setNodes] = useState([] as d3.HierarchyNode<KnowledgeNode>[])
+
+  const [windowProps, setWindowProps] = useState({x: 0, y: 0, isVisible: false, nodeData: null})
+
+  const handleNodeClick = (x: number, y: number, nodeData: d3.HierarchyNode<KnowledgeNode>) => {
+    setWindowProps({x, y, nodeData: Object.getPrototypeOf(nodeData), isVisible: true})
+  }
 
   useEffect(() => {
     setLinks(data.links.map((d) => Object.create(d)))
@@ -91,14 +99,21 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5)
       .selectAll("circle")
-      .data(nodes)
+      // @ts-ignore
+      .data(nodes, d => d.doc)
       .join("circle")
       .attr("r", 10)
       // .attr("fill", color)
       // @ts-ignore
       .call(drag(simulation))
+      .on("click", (e: MouseEvent) => {
+        console.log(e)
+        // @ts-ignore
+        handleNodeClick(e.x, e.y, e.target.__data__)
+      })
 
-    node.append("title").text((d: any) => "Title")
+    // @ts-ignore
+    node.append("title").text(d => d.doc)
 
     simulation.on("tick", () => {
       link
@@ -126,9 +141,11 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
         svg.selectAll("g").attr("transform", e.transform)
       })
 
-    // @ts-ignore
-    svg.call(zoom)
-    // .call(zoom.transform, d3.zoomIdentity)
+    svg
+      // @ts-ignore
+      .call(zoom)
+      // @ts-ignore
+      .call(zoom.transform, d3.zoomIdentity)
 
     return () => {
       simulation.stop()
@@ -141,8 +158,9 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
         Hello, {name}! &nbsp;
         <button>Click Me!</button>
       </span>
-      <div>
+      <div style={{marginBottom: 150}}>
         <svg id="graph" width={730} height={600}></svg>
+        <NodeWindow {...windowProps} setWindowProps={setWindowProps}/>
       </div>
     </>
   )
