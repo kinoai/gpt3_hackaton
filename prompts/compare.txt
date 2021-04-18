@@ -1,39 +1,13 @@
-The following is the abstract of the paper called "DeepFace: Closing the Gap to Human-Level Performance in Face Verification":
+The following is the abstract of the paper called "{title1}":
 
 """
-In modern face recognition, the conventional pipeline
-consists of four stages: detect ⇒ align ⇒ represent ⇒ classify. We revisit both the alignment step and the representation step by employing explicit 3D face modeling in order to
-apply a piecewise affine transformation, and derive a face
-representation from a nine-layer deep neural network. This
-deep network involves more than 120 million parameters
-using several locally connected layers without weight sharing, rather than the standard convolutional layers. Thus
-we trained it on the largest facial dataset to-date, an identity labeled dataset of four million facial images belonging to more than 4,000 identities. The learned representations coupling the accurate model-based alignment with the
-large facial database generalize remarkably well to faces in
-unconstrained environments, even with a simple classifier.
-Our method reaches an accuracy of 97.35% on the Labeled
-Faces in the Wild (LFW) dataset, reducing the error of the
-current state of the art by more than 27%, closely approaching human-level performance.
+{abstract1}
 """
 
-The following is the abstract of a different paper called "Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks":
+The following is the abstract of a different paper called "{title2}":
 
 """
-State-of-the-art object detection networks depend on region proposal algorithms
-to hypothesize object locations. Advances like SPPnet [7] and Fast R-CNN [5]
-have reduced the running time of these detection networks, exposing region proposal computation as a bottleneck. In this work, we introduce a Region Proposal Network (RPN) that shares full-image convolutional features with the detection network, thus enabling nearly cost-free region proposals. An RPN is a
-fully-convolutional network that simultaneously predicts object bounds and objectness scores at each position. RPNs are trained end-to-end to generate highquality region proposals, which are used by Fast R-CNN for detection. With a
-simple alternating optimization, RPN and Fast R-CNN can be trained to share
-convolutional features. For the very deep VGG-16 model [19], our detection
-system has a frame rate of 5fps (including all steps) on a GPU, while achieving
-state-of-the-art object detection accuracy on PASCAL VOC 2007 (73.2% mAP)
-and 2012 (70.4% mAP) using 300 proposals per image. Code is available at
-https://github.com/ShaoqingRen/faster_rcnn.
+{abstract2}
 """
 
 My friend asked me to sum up the most important points from both of those abstracts:
-
-1. DeepFace is a method for face recognition, while Faster R-CNN is a method for object detection.
-2. The authors of DeepFace used a deep neural network to learn the mapping from images to 3D facial models, and then applied that mapping to aligning faces in images. The authors of Faster R-CNN used a deep neural network to learn the mapping from images to bounding boxes around objects, and then applied that mapping to detecting objects in images.
-3. Both methods are based on convolutional neural networks (CNNs). In fact, both use very similar CNNs: VGG-16 [19] for DeepFace and ResNet [20] for Faster R-CNN (both are 16 layers deep).
-4. Both methods achieve state-of-the-art performance on their respective tasks: 97% accuracy on Labeled Faces in the Wild (LFW) dataset for DeepFace; 73% mAP on PASCAL VOC 2007/2012 datasets for Faster R-CNN (mAP stands for mean average precision).
-

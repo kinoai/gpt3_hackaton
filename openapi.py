@@ -8,6 +8,8 @@ from itertools import combinations
 import openai
 from dotenv import load_dotenv
 
+from load_data import load_prompt
+
 # from typing import Generator
 # from warnings import resetwarnings
 
@@ -58,6 +60,27 @@ def semantic_search(documents: list, query: str):
         for doc in documents
     ]
     response = openai.Engine(engine).search(documents=docs, query=query)
+
+    return response
+
+
+def compare_papers(title1, abstract1, title2, abstract2):
+    prompt = load_prompt(filename="prompts/compare.txt")
+    prompt = prompt.format(
+        title1=title1, abstract1=abstract1, title2=title2, abstract2=abstract2
+    )
+
+    # print(prompt)
+
+    response = openai.Completion.create(
+        engine=engine,
+        prompt=prompt,
+        temperature=0.3,
+        max_tokens=400,
+        top_p=1.0,
+        frequency_penalty=1.0,
+        presence_penalty=0.0,
+    )
 
     return response
 
