@@ -16,4 +16,3 @@ A very simple way to improve the performance of almost any machine learningalgor
 
 I was asked to precisely explain what is the main difference between those two abstracts, while staying true to facts. Here is my answer:
 
-
