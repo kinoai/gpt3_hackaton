@@ -5,12 +5,12 @@ from openapi import create_graph_from_list, documents, semantic_groups
 
 session_state = SessionState.get(
     tresholds={
-        "Image segmentation and object detection": 50,
-        "Natural Language Processing": 50,
-        "Unsupervised, Generative Models": 50,
-        "Deepfakes": 50,
-        "Speech": 50,
-        "Robotics": 50,
+        "Image segmentation and object detection": 100,
+        "Natural Language Processing": 250,
+        "Unsupervised, Generative Models": 105,
+        "Deepfakes": 200,
+        "Speech": 205,
+        "Robotics": 275,
     },
 )
 
@@ -23,7 +23,11 @@ def main():
         list(session_state.tresholds.keys()),
     )
     treshold = st.sidebar.slider(
-        f"Treshold for {choice}", 0, 300, value=session_state.tresholds[choice]
+        f"Treshold for {choice}",
+        100,
+        300,
+        value=session_state.tresholds[choice],
+        step=5,
     )
     session_state.tresholds[choice] = treshold
 
