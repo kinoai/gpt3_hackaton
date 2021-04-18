@@ -7,6 +7,8 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
+## How it works
+![](https://github.com/kinoai/gpt3_hackaton/blob/resources/demo.gif)
 
 
 <!-- ```
