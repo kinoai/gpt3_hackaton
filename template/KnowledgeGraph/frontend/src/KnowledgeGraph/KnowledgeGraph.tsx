@@ -28,11 +28,41 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
   const [links, setLinks] = useState([] as d3.HierarchyLink<KnowledgeNode>[])
   const [nodes, setNodes] = useState([] as d3.HierarchyNode<KnowledgeNode>[])
 
-  const [windowProps, setWindowProps] = useState({x: 0, y: 0, isVisible: false, nodeData: null})
+  const [windowProps, setWindowProps] = useState({
+    x: 0,
+    y: 0,
+    isVisible: false,
+    nodeData: null,
+  })
 
-  const handleNodeClick = (x: number, y: number, nodeData: d3.HierarchyNode<KnowledgeNode>) => {
-    setWindowProps({x, y, nodeData: Object.getPrototypeOf(nodeData), isVisible: true})
+  const [selectedNodes, setSelectedNodes] = useState([])
+
+  const handleNodeClick = (
+    x: number,
+    y: number,
+    nodeData: d3.HierarchyNode<KnowledgeNode>
+  ) => {
+    setWindowProps({
+      x,
+      y,
+      nodeData: Object.getPrototypeOf(nodeData),
+      isVisible: true,
+    })
   }
+
+  const handleNodeSelect = (target: any) => {
+    // @ts-ignore
+    setSelectedNodes((oldSelection) => {
+      if (oldSelection.length > 1) return oldSelection
+      d3.select(target).style("fill", !oldSelection.length ? "red" : "orange")
+      return [...oldSelection, target]
+    })
+  }
+
+  useEffect(() => {
+    if (selectedNodes.length < 2) return
+    console.log(selectedNodes)
+  }, [selectedNodes])
 
   useEffect(() => {
     setLinks(data.links.map((d) => Object.create(d)))
@@ -43,6 +73,16 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
     const [width, height] = [730, 600]
     const svg = d3.select("#graph")
     if (!svg) return
+
+    svg.on("click", (e: MouseEvent) => {
+      if (e.target && "__data__" in e.target) return
+      setSelectedNodes((currSelectedNodes) => {
+        currSelectedNodes.forEach((node) => {
+          d3.select(node).style("fill", null)
+        })
+        return []
+      })
+    })
 
     const simulation = d3
       .forceSimulation(nodes as d3.SimulationNodeDatum[])
@@ -100,20 +140,22 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
       .attr("stroke-width", 1.5)
       .selectAll("circle")
       // @ts-ignore
-      .data(nodes, d => d.doc)
+      .data(nodes, (d) => d.doc)
       .join("circle")
       .attr("r", 10)
       // .attr("fill", color)
       // @ts-ignore
       .call(drag(simulation))
       .on("click", (e: MouseEvent) => {
-        console.log(e)
+        // console.log(e)
+        if (e.ctrlKey || e.metaKey) return handleNodeSelect(e.target)
+
         // @ts-ignore
         handleNodeClick(e.x, e.y, e.target.__data__)
       })
 
     // @ts-ignore
-    node.append("title").text(d => d.doc)
+    node.append("title").text((d) => d.doc)
 
     simulation.on("tick", () => {
       link
@@ -158,9 +200,9 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
         Hello, {name}! &nbsp;
         <button>Click Me!</button>
       </span>
-      <div style={{marginBottom: 150}}>
+      <div style={{ marginBottom: 150 }}>
         <svg id="graph" width={730} height={600}></svg>
-        <NodeWindow {...windowProps} setWindowProps={setWindowProps}/>
+        <NodeWindow {...windowProps} setWindowProps={setWindowProps} />
       </div>
     </>
   )
