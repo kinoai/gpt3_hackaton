@@ -4,7 +4,7 @@ import SessionState
 from openapi import create_graph_from_list, documents, semantic_groups
 
 session_state = SessionState.get(
-    tresholds={
+    thresholds={
         "Image segmentation and object detection": 100,
         "Natural Language Processing": 250,
         "Unsupervised, Generative Models": 105,
@@ -12,31 +12,23 @@ session_state = SessionState.get(
         "Speech": 205,
         "Robotics": 275,
     },
+    pages=("Graphs", "Thresholds"),
 )
 
 
-def main():
-    st.sidebar.title("Settings")
-
-    choice = st.sidebar.selectbox(
-        "Select for which group you want to set the treshold",
-        list(session_state.tresholds.keys()),
-    )
-    treshold = st.sidebar.slider(
-        f"Treshold for {choice}",
-        100,
-        300,
-        value=session_state.tresholds[choice],
-        step=5,
-    )
-    session_state.tresholds[choice] = treshold
-
-    nodes, links = create_graph_from_list(
+@st.cache
+def get_graph(thresholds):
+    return create_graph_from_list(
         documents=documents,
         responses=semantic_groups,
-        tresholds=session_state.tresholds,
+        thresholds=thresholds,
     )
-    st.write("Number of links:", len(links))
+
+
+def settings():
+    st.sidebar.title("Settings")
+
+    page = st.sidebar.radio("Select page", session_state.pages)
 
     temperature = st.sidebar.slider("Temperature", 0.0, 1.0, step=0.01)
     freq_penalty = st.sidebar.slider("Frequency penalty", 0.0, 1.0, step=0.01)
@@ -47,26 +39,31 @@ def main():
         "Engine", ["ada", "babbage", "curie", "davinci"]
     )
 
-    """
-    # Digital garden
+    return page
 
-    ### _Queries_: \n
-    _How is the first paper similar to the second paper?_\n
-    _How is the first paper different from the second paper?_\n
-    _What is the main of the first paper?_\n
-    _What is the main topic of the second paper?_\n
-    _Why does the first paper belong to class X?_\n
-    _Why does the second paper belong to class X?_\n
 
-    """
+def threshold_page():
+    st.title("Set thresholds")
+    for key, val in session_state.thresholds.items():
+        # st.write("Threshold for ", key, " = ", val)
+        threshold = st.slider(f"Threshold for {key}", 100, 300, val)
+        session_state.thresholds[key] = threshold
 
-    text = st.text_input("Enter some text here.")
 
-    f"{text}" if text else ""
+def graph_page():
+    st.title("Awesome graphs!")
 
-    # use @st.cache to cache function state
-    for key, val in session_state.tresholds.items():
-        st.write("Treshold for ", key, " = ", val)
+
+def main():
+
+    page = settings()
+
+    if page == "Thresholds":
+        threshold_page()
+    else:
+        graph_page()
+
+    nodes, links = get_graph(session_state.thresholds)
 
 
 main()

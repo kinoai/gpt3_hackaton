@@ -114,7 +114,7 @@ def common_things(text1, text2):
 
 def update_nodes(
     documents: list,
-    treshold: int,
+    threshold: int,
     query: str,
     response: list,
     nodes: list = [],
@@ -135,7 +135,7 @@ def update_nodes(
     #     response = json.load(fp)
 
     for item in response["data"]:
-        if item["score"] >= treshold:
+        if item["score"] >= threshold:
             nodes[item["document"]]["groups"].append(
                 {"name": query, "score": item["score"]}
             )
@@ -165,12 +165,12 @@ def get_links(nodes: list) -> list:
     return links
 
 
-def create_graph_from_list(documents: list, responses: list, tresholds: dict):
+def create_graph_from_list(documents: list, responses: list, thresholds: dict):
     nodes = []
     for response in responses:
         nodes = update_nodes(
             documents=documents,
-            treshold=tresholds[response["query"]],
+            threshold=thresholds[response["query"]],
             query=response["query"],
             response=response,
             nodes=nodes,
@@ -183,10 +183,10 @@ def create_graph_from_list(documents: list, responses: list, tresholds: dict):
 
 # %%
 # nodes = update_nodes(
-#     documents=data, query="Parameter optimization", treshold=250
+#     documents=data, query="Parameter optimization", threshold=250
 # )
 # nodes = update_nodes(
-#     documents=data[::-1], query="Another one", treshold=210, nodes=nodes
+#     documents=data[::-1], query="Another one", threshold=210, nodes=nodes
 # )
 
 # print(nodes)
@@ -231,9 +231,9 @@ with open("data/papers_full.pickle", "rb") as handle:
 with open("./data/semantic_searches_davinci.json") as fp:
     semantic_groups = json.load(fp)
 
-# tresholds = {"Image segmentation and object detection": 70, "Natural Language Processing": 65, "Unsupervised, Generative Models": 50, "Deepfakes": 100, "Speech": 100, "Robotics": 100}
+# thresholds = {"Image segmentation and object detection": 70, "Natural Language Processing": 65, "Unsupervised, Generative Models": 50, "Deepfakes": 100, "Speech": 100, "Robotics": 100}
 
-# nodes, links = create_graph_from_list(documents=documents, responses=semantic_groups, tresholds=tresholds)
+# nodes, links = create_graph_from_list(documents=documents, responses=semantic_groups, thresholds=thresholds)
 
 # %%
 # for group in semantic_groups:
