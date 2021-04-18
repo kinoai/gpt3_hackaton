@@ -23,10 +23,6 @@ class StreamlitComponent extends StreamlitComponentBase<State> {
   public state = { numClicks: 0, isFocused: false }
 
   public render = (): ReactNode => {
-    // Arguments that are passed to the plugin in Python are accessible
-    // via `this.props.args`. Here, we access the "name" arg.
-    const name = this.props.args["name"]
-
     // Streamlit sends us a theme object via props that we can use to ensure
     // that our component has visuals that match the active theme in a
     // streamlit app.
@@ -43,15 +39,21 @@ class StreamlitComponent extends StreamlitComponentBase<State> {
       style.outline = borderStyling
     }
 
-    const nodes = JSON.parse(JSON.stringify(mockedNodes))
-    const links = JSON.parse(JSON.stringify(mockedLinks))
+    // const nodes = JSON.parse(JSON.stringify(mockedNodes))
+    // const links = JSON.parse(JSON.stringify(mockedLinks))
+
+    const nodes = this.props.args["nodes"]
+    const links = this.props.args["links"]
+
+    // console.log(`nodes`, nodes)
+    // console.log(`links`, links)
 
     // Show a button and some text.
     // When the button is clicked, we'll increment our "numClicks" state
     // variable, and send its new value back to Streamlit, where it'll
     // be available to the Python program.
     return (
-      <KnowledgeGraph name={name} data={{links, nodes}} />
+      <KnowledgeGraph data={{links, nodes}} />
     )
   }
 

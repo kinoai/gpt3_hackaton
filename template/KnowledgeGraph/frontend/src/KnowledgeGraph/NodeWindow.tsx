@@ -1,11 +1,13 @@
 import { map } from "d3-array"
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { debounce } from "debounce"
+
+import { compare_papers } from "./api"
 
 // import { HierarchyNode } from "d3"
 import { KnowledgeNode } from "./KnowledgeGraph"
 
-import { WindowContainer } from "./NodeWindow-styles"
+import { WindowContainer, StyledSpinner } from "./NodeWindow-styles"
 
 interface NodesPair {
   nodeA: KnowledgeNode
@@ -30,9 +32,12 @@ const NodeWindow = ({
   nodeData,
   compareData,
   setWindowProps,
-  onDragEnd
+  onDragEnd,
 }: NodeWindowProps) => {
   const windowRef = useRef(null)
+
+  const [loading, setLoading] = useState(true)
+  const [response, setResponse] = useState<string | null>(null)
 
   function hideOnClickOutside(element: HTMLElement) {
     const outsideClickListener = (event: MouseEvent) => {
@@ -40,7 +45,13 @@ const NodeWindow = ({
       if ("__data__" in event.target) return
       // @ts-ignore
       if (!element.contains(event.target) && checkElementVisibility(element)) {
-        setWindowProps({ x: 0, y: 0, isVisible: false, nodeData: null, compareData: null })
+        setWindowProps({
+          x: 0,
+          y: 0,
+          isVisible: false,
+          nodeData: null,
+          compareData: null,
+        })
         removeClickListener()
       }
     }
@@ -57,27 +68,92 @@ const NodeWindow = ({
     !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
 
   useEffect(() => {
-    console.log(windowRef.current)
     if (isVisible && windowRef.current)
       // @ts-ignore
       hideOnClickOutside(windowRef.current)
   }, [isVisible])
 
-  if (!nodeData && compareData) return (
-    // @ts-ignore
-    <WindowContainer ref={windowRef} x={x} y={y} isVisible={isVisible} draggable onDragEnd={onDragEnd}>
-      <p><b>Title (blue):</b> {compareData.nodeA.doc}</p> <br />
-      <p><b>Title (orange):</b> {compareData.nodeB.doc}</p>
-    </WindowContainer>
-  )
+  useEffect(() => {
+    if (!compareData) return
+    setLoading(true)
+    compare_papers(
+      compareData.nodeA.doc.title,
+      compareData.nodeA.doc.abstract,
+      compareData.nodeB.doc.title,
+      compareData.nodeB.doc.abstract
+    ).then((resp) => {
+      setResponse(resp)
+      setLoading(false)
+    })
+  }, [compareData])
 
-  if (!nodeData) return <WindowContainer ref={windowRef} x={x} y={y} isVisible={false} />
+  if (!nodeData && compareData)
+    return (
+      <WindowContainer
+        ref={windowRef}
+        x={x}
+        y={y}
+        isVisible={isVisible}
+        draggable
+        // @ts-ignore
+        onDragEnd={onDragEnd}
+      >
+        <p>
+          <b>
+            Title (<span style={{ color: "red" }}>red</span>):
+          </b>{" "}
+          <br /> {compareData.nodeA.doc.title}
+        </p>
+        <p>
+          <b>
+            Title (<span style={{ color: "orange" }}>orange</span>):
+          </b>{" "}
+          <br /> {compareData.nodeB.doc.title}
+        </p>
+        <b>Summary:</b> <br />
+        <span>
+          {loading ? (
+            <p>
+              GPT-3 is thinking...
+              <StyledSpinner viewBox="0 0 50 50">
+                <circle
+                  className="path"
+                  cx="25"
+                  cy="25"
+                  r="20"
+                  fill="none"
+                  strokeWidth="2"
+                />
+              </StyledSpinner>
+            </p>
+          ) : (
+            response
+              ?.split("\n")
+              .map((str, i) => <p key={`comp-${i}`}>{str}</p>)
+          )}
+        </span>
+      </WindowContainer>
+    )
+
+  if (!nodeData)
+    return <WindowContainer ref={windowRef} x={x} y={y} isVisible={false} />
 
   return (
     // @ts-ignore
-    <WindowContainer ref={windowRef} x={x} y={y} isVisible={isVisible} draggable onDragEnd={onDragEnd}>
+    <WindowContainer
+      ref={windowRef}
+      x={x}
+      y={y}
+      isVisible={isVisible}
+      draggable
+      // @ts-ignore
+      onDragEnd={onDragEnd}
+    >
       <p>
-        <b>Title:</b> {nodeData.doc}
+        <b>Title:</b> <br /> {nodeData.doc.title} <br />
+      </p>
+      <p>
+        <b>Authors:</b> <br /> {nodeData.doc.authors.join(", ")}
       </p>
       <b>Categories: </b>
       <ul>

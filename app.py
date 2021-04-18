@@ -3,6 +3,8 @@ import streamlit as st
 import SessionState
 from openapi import create_graph_from_list, documents, semantic_groups
 
+from template.KnowledgeGraph import knowledge_graph
+
 session_state = SessionState.get(
     tresholds={
         "Image segmentation and object detection": 100,
@@ -50,23 +52,13 @@ def main():
     """
     # Digital garden
 
-    ### _Queries_: \n
-    _How is the first paper similar to the second paper?_\n
-    _How is the first paper different from the second paper?_\n
-    _What is the main of the first paper?_\n
-    _What is the main topic of the second paper?_\n
-    _Why does the first paper belong to class X?_\n
-    _Why does the second paper belong to class X?_\n
-
     """
-
-    text = st.text_input("Enter some text here.")
-
-    f"{text}" if text else ""
 
     # use @st.cache to cache function state
     for key, val in session_state.tresholds.items():
         st.write("Treshold for ", key, " = ", val)
+
+    num_clicks = knowledge_graph(nodes, links, key="knowledge-graph")
 
 
 main()

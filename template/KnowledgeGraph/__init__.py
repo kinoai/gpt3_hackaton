@@ -40,7 +40,7 @@ else:
 # `declare_component` and call it done. The wrapper allows us to customize
 # our component's API: we can pre-process its input args, post-process its
 # output value, and add a docstring for users.
-def knowledge_graph(name, key=None):
+def knowledge_graph(nodes, links, key=None):
     """Create a new instance of "knowledge_graph".
 
     Parameters
@@ -67,17 +67,18 @@ def knowledge_graph(name, key=None):
     #
     # "default" is a special argument that specifies the initial return
     # value of the component before the user has interacted with it.
-    component_value = _component_func(name=name, key=key, default=0)
+    component_value = _component_func(nodes=nodes, links=links, key=key, default=0)
 
     # We could modify the value returned from the component if we wanted.
     # There's no need to do this in our simple example - but it's an option.
     return component_value
 
 
+ATOMIC_RUN = False
 # Add some test code to play with the component while it's in development.
 # During development, we can run this just as we would any other Streamlit
 # app: `$ streamlit run knowledge_graph/__init__.py`
-if not _RELEASE:
+if not _RELEASE and ATOMIC_RUN:
     import streamlit as st
 
     st.subheader("Component with variable args")

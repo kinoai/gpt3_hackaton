@@ -9,8 +9,16 @@ interface KnowledgeGroup {
   name: string
   score: Number
 }
+
+interface KnowledgeDocument {
+  abstract: string
+  authors: string[]
+  link: string
+  title: string
+}
+
 export interface KnowledgeNode {
-  doc: string
+  doc: KnowledgeDocument
   groups: KnowledgeGroup[]
 }
 
@@ -20,11 +28,10 @@ interface DataProps {
 }
 
 interface KnowledgeGraphProps {
-  name: string
   data: DataProps
 }
 
-const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
+const KnowledgeGraph = ({ data }: KnowledgeGraphProps) => {
   const [links, setLinks] = useState([] as d3.HierarchyLink<KnowledgeNode>[])
   const [nodes, setNodes] = useState([] as d3.HierarchyNode<KnowledgeNode>[])
 
@@ -93,21 +100,18 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
   useEffect(() => {
     setLinks(data.links.map((d) => Object.create(d)))
     setNodes(data.nodes.map((d) => Object.create(d)))
+    d3.select("#graph").selectAll("*").remove()
   }, [data])
 
   useEffect(() => {
-    const [width, height] = [730, 600]
+    const [width, height] = [690, 590]
     const svg = d3.select("#graph")
     if (!svg) return
 
     svg.on("click", (e: MouseEvent) => {
       if (e.target && "__data__" in e.target) return
-      setSelectedNodes((currSelectedNodes) => {
-        currSelectedNodes.forEach((node) => {
-          d3.select(node).style("fill", null)
-        })
-        return []
-      })
+      d3.select("svg").selectAll("circle").style("fill", "")
+      setSelectedNodes([])
     })
 
     const simulation = d3
@@ -118,7 +122,7 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
           .forceLink(links as d3.SimulationLinkDatum<d3.SimulationNodeDatum>[])
           .distance(40)
           .strength(0.2)
-          .id((d) => (d as KnowledgeNode).doc)
+          .id((d) => (d as KnowledgeNode).doc.title)
       )
       .force("charge", d3.forceManyBody().strength(-100).distanceMax(100))
       .force("center", d3.forceCenter(width / 2, height / 2).strength(1.5))
@@ -166,7 +170,7 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
       .attr("stroke-width", 1.5)
       .selectAll("circle")
       // @ts-ignore
-      .data(nodes, (d) => d.doc)
+      .data(nodes, (d) => d.doc.title)
       .join("circle")
       .attr("r", 10)
       // .attr("fill", color)
@@ -178,6 +182,10 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
 
         // @ts-ignore
         handleNodeClick(e.x, e.y, e.target.__data__)
+        // @ts-ignore
+        d3.select("svg").selectAll("circle").style("fill", "")
+        // @ts-ignore
+        d3.select(e.target).style("fill", "red")
       })
 
     // @ts-ignore
@@ -222,12 +230,8 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
 
   return (
     <>
-      <span>
-        Hello, {name}! &nbsp;
-        <button>Click Me!</button>
-      </span>
-      <div style={{ marginBottom: 150 }}>
-        <svg id="graph" width={730} height={600}></svg>
+      <div style={{ border: "1px solid gray", borderRadius: 5 }}>
+        <svg id="graph" width={690} height={590}></svg>
         <NodeWindow
           {...windowProps}
           setWindowProps={setWindowProps}
