@@ -4,15 +4,17 @@ import os
 import pickle
 from collections import defaultdict
 from itertools import combinations
-from typing import Generator
-from warnings import resetwarnings
 
 import openai
 from dotenv import load_dotenv
 
+# from typing import Generator
+# from warnings import resetwarnings
+
+
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
-engine = "babbage"
+engine = "davinci"
 
 
 def get_keywords(text: str):
@@ -88,9 +90,14 @@ def common_things(text1, text2):
 
 
 def update_nodes(
-    documents: list, query: str, treshold: int, nodes: list = None
+    documents: list,
+    treshold: int,
+    query: str,
+    response: list,
+    nodes: list = [],
 ) -> list:
-    if nodes == None:
+    print(len(nodes))
+    if not nodes:
         nodes = [
             {
                 "doc": {
@@ -102,8 +109,8 @@ def update_nodes(
         ]
 
     # response = semantic_search(documents=documents, query=query)
-    with open("data/semantic_search_response.json") as fp:
-        response = json.load(fp)
+    # with open("data/semantic_search_response.json") as fp:
+    #     response = json.load(fp)
 
     for item in response["data"]:
         if item["score"] >= treshold:
@@ -136,15 +143,70 @@ def get_links(nodes: list) -> list:
     return links
 
 
-with open("data/papers_full.pickle", "rb") as handle:
-    data = pickle.load(handle)
+def create_graph_from_list(documents: list, responses: list, tresholds: list):
+    nodes = []
+    for response, treshold in zip(responses, tresholds):
+        nodes = update_nodes(
+            documents=documents,
+            treshold=treshold,
+            query=response["query"],
+            response=response,
+            nodes=nodes,
+        )
 
-nodes = update_nodes(
-    documents=data, query="Parameter optimization", treshold=250
-)
-nodes = update_nodes(
-    documents=data[::-1], query="Another one", treshold=210, nodes=nodes
-)
+    links = get_links(nodes)
+
+    return nodes, links
+
+
+# %%
+# nodes = update_nodes(
+#     documents=data, query="Parameter optimization", treshold=250
+# )
+# nodes = update_nodes(
+#     documents=data[::-1], query="Another one", treshold=210, nodes=nodes
+# )
 
 # print(nodes)
 # print(get_links(nodes=nodes))
+
+# %%
+# with open("data/papers_full.pickle", "rb") as handle:
+#     documents = pickle.load(handle)
+
+# queries = [
+#     "Image segmentation and object detection",
+#     "Natural Language Processing",
+#     "Unsupervised, Generative Models",
+#     "Deepfakes",
+#     "Speech",
+#     "Robotics",
+# ]
+
+# semantic_groups = []
+
+# for query in queries:
+#     response = semantic_search(documents=documents, query=query)
+#     semantic_groups.append({"query": query, "data": response["data"]})
+
+# with open("./data/semantic_searches_davinci.json", "w") as fp:
+#     json.dump(semantic_groups, fp)
+
+
+# %%
+# for group in semantic_groups:
+#     print("\n", group["query"])
+#     for i in range(len(documents)):
+#         print(documents[i]["title"], group["data"][i]["score"])
+
+
+# %%
+# create nodes and links for semantic searches stored in files
+
+# with open("data/papers_full.pickle", "rb") as handle:
+#     documents = pickle.load(handle)
+
+# with open("./data/semantic_searches_davinci.json") as fp:
+#     semantic_groups = json.load(fp)
+
+# nodes, links = create_graph_from_list(documents=documents, responses=semantic_groups, tresholds=[75]*len(responses))
