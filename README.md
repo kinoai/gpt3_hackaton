@@ -9,3 +9,10 @@ pip install -r requirements.txt
 ```
 
 streamlit run app.py
+```
+
+
+
+<!-- ```
+apt-get install libpoppler-cpp-dev
+``` -->

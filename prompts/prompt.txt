@@ -1,0 +1,18 @@
+The following is the abstract of some machine learning paper:
+
+"""
+
+A very simple way to improve the performance of almost any machine learning algorithm is to train many different models on the same data and then to average their predictions [3]. Unfortunately, making predictions using a whole ensembleof models is cumbersome and may be too computationally expensive to allow deployment to a large number of users, especially if the individual models are largeneural nets. Caruana and his collaborators [1] have shown that it is possible tocompress the knowledge in an ensemble into a single model which is much easier to deploy and we develop this approach further using a different compressiontechnique. We achieve some surprising results on MNIST and we show that wecan significantly improve the acoustic model of a heavily used commercial systemby distilling the knowledge in an ensemble of models into a single model. We alsointroduce a new type of ensemble composed of one or more full models and manyspecialist models which learn to distinguish fine-grained classes that the full models confuse. Unlike a mixture of experts, these specialist models can be trainedrapidly and in parallel.
+
+"""
+
+The following is the abstract of a different machine learning paper:
+
+"""
+
+A very simple way to improve the performance of almost any machine learningalgorithm is to train many different models on the same data and then to averagetheir predictions [3]. Unfortunately, making predictions using a whole ensembleof models is cumbersome and may be too computationally expensive to allow deployment to a large number of users, especially if the individual models are largeneural nets. Caruana and his collaborators [1] have shown that it is possible tocompress the knowledge in an ensemble into a single model which is much easier to deploy and we develop this approach further using a different compressiontechnique. We achieve some surprising results on MNIST and we show that wecan significantly improve the acoustic model of a heavily used commercial systemby distilling the knowledge in an ensemble of models into a single model. We alsointroduce a new type of ensemble composed of one or more full models and manyspecialist models which learn to distinguish fine-grained classes that the full models confuse. Unlike a mixture of experts, these specialist models can be trainedrapidly and in parallel.
+
+"""
+
+I was asked to precisely explain what is the main difference between those two abstracts, while staying true to facts. Here is my answer:
+
