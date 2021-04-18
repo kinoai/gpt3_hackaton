@@ -209,4 +209,4 @@ def create_graph_from_list(documents: list, responses: list, tresholds: list):
 # with open("./data/semantic_searches_davinci.json") as fp:
 #     semantic_groups = json.load(fp)
 
-# nodes, links = create_graph_from_list(documents=documents, responses=semantic_groups, tresholds=[75]*len(responses))
+# nodes, links = create_graph_from_list(documents=documents, responses=semantic_groups, tresholds=[75]*len(semantic_groups))
