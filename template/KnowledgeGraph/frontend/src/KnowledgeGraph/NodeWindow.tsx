@@ -7,12 +7,20 @@ import { KnowledgeNode } from "./KnowledgeGraph"
 
 import { WindowContainer } from "./NodeWindow-styles"
 
+interface NodesPair {
+  nodeA: KnowledgeNode
+  nodeB: KnowledgeNode
+  link: any | null
+}
+
 interface NodeWindowProps {
   x: number
   y: number
   isVisible: boolean
   nodeData: KnowledgeNode | null
+  compareData: NodesPair | null
   setWindowProps: Function
+  onDragEnd: Function
 }
 
 const NodeWindow = ({
@@ -20,7 +28,9 @@ const NodeWindow = ({
   y,
   isVisible,
   nodeData,
+  compareData,
   setWindowProps,
+  onDragEnd
 }: NodeWindowProps) => {
   const windowRef = useRef(null)
 
@@ -30,7 +40,7 @@ const NodeWindow = ({
       if ("__data__" in event.target) return
       // @ts-ignore
       if (!element.contains(event.target) && checkElementVisibility(element)) {
-        setWindowProps({ x: 0, y: 0, isVisible: false, nodeData: null })
+        setWindowProps({ x: 0, y: 0, isVisible: false, nodeData: null, compareData: null })
         removeClickListener()
       }
     }
@@ -47,16 +57,25 @@ const NodeWindow = ({
     !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
 
   useEffect(() => {
-    if (isVisible)
+    console.log(windowRef.current)
+    if (isVisible && windowRef.current)
       // @ts-ignore
       hideOnClickOutside(windowRef.current)
   }, [isVisible])
 
-  if (!nodeData) return <WindowContainer x={x} y={y} isVisible={false} />
+  if (!nodeData && compareData) return (
+    // @ts-ignore
+    <WindowContainer ref={windowRef} x={x} y={y} isVisible={isVisible} draggable onDragEnd={onDragEnd}>
+      <p><b>Title (blue):</b> {compareData.nodeA.doc}</p> <br />
+      <p><b>Title (orange):</b> {compareData.nodeB.doc}</p>
+    </WindowContainer>
+  )
+
+  if (!nodeData) return <WindowContainer ref={windowRef} x={x} y={y} isVisible={false} />
 
   return (
     // @ts-ignore
-    <WindowContainer ref={windowRef} x={x} y={y} isVisible={isVisible}>
+    <WindowContainer ref={windowRef} x={x} y={y} isVisible={isVisible} draggable onDragEnd={onDragEnd}>
       <p>
         <b>Title:</b> {nodeData.doc}
       </p>

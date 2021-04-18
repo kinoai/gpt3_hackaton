@@ -33,6 +33,7 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
     y: 0,
     isVisible: false,
     nodeData: null,
+    compareData: null,
   })
 
   const [selectedNodes, setSelectedNodes] = useState([])
@@ -46,6 +47,7 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
       x,
       y,
       nodeData: Object.getPrototypeOf(nodeData),
+      compareData: null,
       isVisible: true,
     })
   }
@@ -59,9 +61,33 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
     })
   }
 
+  const moveWindow = (event: React.DragEvent<HTMLDivElement>) => {
+    const newPos = [event.pageX, event.pageY]
+    setWindowProps((oldWindowProps) => ({
+      ...oldWindowProps,
+      x: newPos[0],
+      y: newPos[1],
+    }))
+  }
+
   useEffect(() => {
     if (selectedNodes.length < 2) return
     console.log(selectedNodes)
+    // @ts-ignore
+    setWindowProps((oldWindowProps) => {
+      return {
+        ...oldWindowProps,
+        isVisible: true,
+        nodeData: null,
+        compareData: {
+          // @ts-ignore
+          nodeA: Object.getPrototypeOf(selectedNodes[0].__data__),
+          // @ts-ignore
+          nodeB: Object.getPrototypeOf(selectedNodes[1].__data__),
+          link: null,
+        },
+      }
+    })
   }, [selectedNodes])
 
   useEffect(() => {
@@ -202,7 +228,11 @@ const KnowledgeGraph = ({ name, data }: KnowledgeGraphProps) => {
       </span>
       <div style={{ marginBottom: 150 }}>
         <svg id="graph" width={730} height={600}></svg>
-        <NodeWindow {...windowProps} setWindowProps={setWindowProps} />
+        <NodeWindow
+          {...windowProps}
+          setWindowProps={setWindowProps}
+          onDragEnd={moveWindow}
+        />
       </div>
     </>
   )
