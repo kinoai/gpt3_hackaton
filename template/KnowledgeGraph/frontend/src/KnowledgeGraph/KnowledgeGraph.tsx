@@ -5,6 +5,8 @@ import { debounce } from "debounce"
 
 import NodeWindow from "./NodeWindow"
 
+import { StyledSvg } from "./KnowledgeGraph-styles"
+
 interface KnowledgeGroup {
   name: string
   score: Number
@@ -187,6 +189,10 @@ const KnowledgeGraph = ({ data }: KnowledgeGraphProps) => {
         // @ts-ignore
         d3.select(e.target).style("fill", "red")
       })
+      // // @ts-ignore
+      // .on("mouseenter", (e: MouseEvent) => { d3.select(e.target).style("fill", "red").style("cursor", "pointer") })
+      // // @ts-ignore
+      // .on("mouseleave", (e: MouseEvent) => { d3.select(e.target).style("fill", "") })
 
     // @ts-ignore
     node.append("title").text((d) => d.doc)
@@ -231,7 +237,7 @@ const KnowledgeGraph = ({ data }: KnowledgeGraphProps) => {
   return (
     <>
       <div style={{ border: "1px solid gray", borderRadius: 5 }}>
-        <svg id="graph" width={690} height={590}></svg>
+        <StyledSvg id="graph" width={690} height={590}></StyledSvg>
         <NodeWindow
           {...windowProps}
           setWindowProps={setWindowProps}
