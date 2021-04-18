@@ -68,6 +68,26 @@ for paper in iterator:
         pdf = pdftotext.PDF(f)
         paper_data["full_text"] = "\n\n".join(pdf)
 
+        i = 0
+        for page in pdf:
+
+            if i == 0:
+                # convert many spaces to single space
+                paper_data["first_page"] = re.sub("\s+", " ", page)
+            elif i == 1:
+                paper_data["second_page"] = re.sub("\s+", " ", page)
+            elif i > 1:
+                break
+
+            i += 1
+
+    print(paper_data["first_page"])
+    print("-------------------------------------")
+    print(paper_data["second_page"])
+    print("-------------------------------------")
+    print("-------------------------------------")
+    print("-------------------------------------")
+
     data.append(paper_data)
 
 
