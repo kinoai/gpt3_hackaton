@@ -96,7 +96,6 @@ def update_nodes(
     response: list,
     nodes: list = [],
 ) -> list:
-    print(len(nodes))
     if not nodes:
         nodes = [
             {
@@ -143,12 +142,12 @@ def get_links(nodes: list) -> list:
     return links
 
 
-def create_graph_from_list(documents: list, responses: list, tresholds: list):
+def create_graph_from_list(documents: list, responses: list, tresholds: dict):
     nodes = []
-    for response, treshold in zip(responses, tresholds):
+    for response in responses:
         nodes = update_nodes(
             documents=documents,
-            treshold=treshold,
+            treshold=tresholds[response["query"]],
             query=response["query"],
             response=response,
             nodes=nodes,
@@ -203,10 +202,20 @@ def create_graph_from_list(documents: list, responses: list, tresholds: list):
 # %%
 # create nodes and links for semantic searches stored in files
 
-# with open("data/papers_full.pickle", "rb") as handle:
-#     documents = pickle.load(handle)
+with open("data/papers_full.pickle", "rb") as handle:
+    documents = pickle.load(handle)
 
-# with open("./data/semantic_searches_davinci.json") as fp:
-#     semantic_groups = json.load(fp)
+with open("./data/semantic_searches_davinci.json") as fp:
+    semantic_groups = json.load(fp)
 
-# nodes, links = create_graph_from_list(documents=documents, responses=semantic_groups, tresholds=[75]*len(semantic_groups))
+# tresholds = {"Image segmentation and object detection": 70, "Natural Language Processing": 65, "Unsupervised, Generative Models": 50, "Deepfakes": 100, "Speech": 100, "Robotics": 100}
+
+# nodes, links = create_graph_from_list(documents=documents, responses=semantic_groups, tresholds=tresholds)
+
+# %%
+# for group in semantic_groups:
+#     print("\n", group["query"])
+
+# %%
+# print(links)
+# %%
