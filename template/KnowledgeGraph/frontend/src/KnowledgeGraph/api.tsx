@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import { compare_prompt } from "./prompts"
+import { compare_prompt, tldr_prompt } from "./prompts"
 
 const ENGINE = "davinci"
 
@@ -24,3 +24,18 @@ export const compare_papers = async (title1, abstract1, title2, abstract2) =>
     .then((resp) => {
       return resp.data.choices[0].text
     })
+
+export const get_tldr = async (abstract: string) =>
+await instance
+  .post("completions", {
+    prompt: tldr_prompt(abstract),
+    temperature: 0.0,
+    max_tokens: 82,
+    top_p: 1.0,
+    frequency_penalty: 1.0,
+    presence_penalty: 0.0,
+    stop: "."
+  })
+  .then((resp) => {
+    return resp.data.choices[0].text
+  })

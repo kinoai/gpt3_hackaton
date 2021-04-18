@@ -2,7 +2,7 @@ import { map } from "d3-array"
 import React, { useEffect, useRef, useState } from "react"
 import { debounce } from "debounce"
 
-import { compare_papers } from "./api"
+import { compare_papers, get_tldr } from "./api"
 
 // import { HierarchyNode } from "d3"
 import { KnowledgeNode } from "./KnowledgeGraph"
@@ -38,6 +38,9 @@ const NodeWindow = ({
 
   const [loading, setLoading] = useState(true)
   const [response, setResponse] = useState<string | null>(null)
+
+  const [loadingTldr, setLoadingTldr] = useState(true)
+  const [responseTldr, setResponseTldr] = useState<string | null>(null)
 
   function hideOnClickOutside(element: HTMLElement) {
     const outsideClickListener = (event: MouseEvent) => {
@@ -87,6 +90,17 @@ const NodeWindow = ({
     })
   }, [compareData])
 
+  useEffect(() => {
+    if (nodeData) {
+      setLoadingTldr(true)
+      get_tldr(nodeData.doc.abstract).then((resp) => {
+        setResponseTldr(resp)
+        setLoadingTldr(false)
+      })
+    } else {
+    }
+  }, [nodeData])
+
   if (!nodeData && compareData)
     return (
       <WindowContainer
@@ -102,13 +116,19 @@ const NodeWindow = ({
           <b>
             Title (<span style={{ color: "red" }}>red</span>):
           </b>{" "}
-          <br /> {compareData.nodeA.doc.title}
+          <br />{" "}
+          <a href={compareData.nodeA.doc.link} target="_blank">
+            {compareData.nodeA.doc.title}
+          </a>
         </p>
         <p>
           <b>
             Title (<span style={{ color: "orange" }}>orange</span>):
           </b>{" "}
-          <br /> {compareData.nodeB.doc.title}
+          <br />{" "}
+          <a href={compareData.nodeB.doc.link} target="_blank">
+            {compareData.nodeB.doc.title}
+          </a>
         </p>
         <b>Summary:</b> <br />
         <span>
@@ -150,11 +170,37 @@ const NodeWindow = ({
       onDragEnd={onDragEnd}
     >
       <p>
-        <b>Title:</b> <br /> {nodeData.doc.title} <br />
+        <b>Title:</b> <br />{" "}
+        <a href={nodeData.doc.link} target="_blank">
+          {nodeData.doc.title}
+        </a>{" "}
+        <br />
       </p>
       <p>
         <b>Authors:</b> <br /> {nodeData.doc.authors.join(", ")}
       </p>
+      <b>TLDR;</b> <br />
+      <span>
+        {loadingTldr ? (
+          <p>
+            GPT-3 is thinking...
+            <StyledSpinner viewBox="0 0 50 50">
+              <circle
+                className="path"
+                cx="25"
+                cy="25"
+                r="20"
+                fill="none"
+                strokeWidth="2"
+              />
+            </StyledSpinner>
+          </p>
+        ) : (
+          responseTldr
+            ?.split("\n")
+            .map((str, i) => <p key={`tldr-0-${i}`}>{str}</p>)
+        )}
+      </span>
       <b>Categories: </b>
       <ul>
         {map(nodeData.groups, (group, i) => (
