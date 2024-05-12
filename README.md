@@ -1,7 +1,7 @@
 # GPT-3-based application
 
 The application was developed for the NextGrid Deep Learning Labs #2 hackathon by the following Sekcja Sztucznej Inteligencji members: Adrian Zjawiński, Łukasz Zalewski, Kacper Włodarczyk, Adrian Zieliński (team name -- Oompa Loompas). 
-The team placed first out of 16 contestant teams. 
+The team placed first out of 16 contestant teams. The event took place in cooperation with OpenAI, ultimately enabling the teams to access ChatGPT-3 before the official release. 
 
 Below is a brief description of the solution: 
 
